@@ -5,7 +5,7 @@ import { useNFTBalance } from "hooks/useNFTBalance";
 import { FileSearchOutlined, SendOutlined, ShoppingCartOutlined } from "@ant-design/icons";
 import { useMoralisDapp } from "providers/MoralisDappProvider/MoralisDappProvider";
 import { getExplorer } from "helpers/networks";
-import AddressInput from "./AddressInput";
+import { useWeb3ExecuteFunction } from "react-moralis";
 const { Meta } = Card;
 
 const styles = {
@@ -22,45 +22,41 @@ const styles = {
 
 function NFTBalance() {
   const { NFTBalance } = useNFTBalance();
-  const { chainId } = useMoralisDapp();
+  const { chainId, marketAddress, contractABI } = useMoralisDapp();
   const { Moralis } = useMoralis();
   const [visible, setVisibility] = useState(false);
-  const [receiverToSend, setReceiver] = useState(null);
-  const [amountToSend, setAmount] = useState(null);
+  const [price, setPrice] = useState();
   const [nftToSell, setNftToSell] = useState(null);
-  const [isPending, setIsPending] = useState(false);
+  const contractProcessor = useWeb3ExecuteFunction();
+  const contractABIJson = JSON.parse(contractABI);
+  const listItemFunction = "createMarketItem";
 
-  async function transfer(nft, amount, receiver) {
-    const options = {
-      type: nft.contract_type,
-      tokenId: nft.token_id,
-      receiver: receiver,
-      contractAddress: nft.token_address,
+  async function list(nft, currentPrice) {
+    const p = currentPrice * ("1e" + 18);
+    const ops = {
+      contractAddress: marketAddress,
+      functionName: listItemFunction,
+      abi: contractABIJson,
+      params: {
+        nftContract: nft.token_address,
+        tokenId: nft.token_id,
+        price: String(p)
+      }
     };
-
-    if (options.type === "erc1155") {
-      options.amount = amount;
-    }
-
-    setIsPending(true);
-    await Moralis.transfer(options)
-      .then((tx) => {
-        console.log(tx);
-        setIsPending(false);
-      })
-      .catch((e) => {
-        alert(e.message);
-        setIsPending(false);
-      });
+    await contractProcessor.fetch({
+      params: ops,
+      onSucces: () => {
+        alert("Item Bought")
+      },
+      onError: (error) => {
+        alert("Something went wrong")
+      }
+    })
   }
 
   const handleSellClick = (nft) => {
     setNftToSell(nft);
     setVisibility(true);
-  };
-
-  const handleChange = (e) => {
-    setAmount(e.target.value);
   };
 
   console.log(NFTBalance);
@@ -103,7 +99,7 @@ function NFTBalance() {
         title={`Sell ${nftToSell?.name || "NFT"}`}
         visible={visible}
         onCancel={() => setVisibility(false)}
-        onOk={() => alert("Bought this NFT")}
+        onOk={() => list(nftToSell, price)}
         okText="Sell"
       >
       <img
@@ -115,6 +111,7 @@ function NFTBalance() {
                 marginBottom: "15px",
             }}
             />
+      <Input autoFocus placeholder="Set Price in MATIC" onChange={e => setPrice(e.target.value)} />
       </Modal>
     </>
   );

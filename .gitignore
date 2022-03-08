@@ -33,3 +33,9 @@ typechain
 #Truffle files
 /Truffle/build
 /Truffle/data
+
+#Hardhat files
+/Hardhat/node_modules
+/Hardhat/artifacts
+/Hardhat/cache
+/Hardhat/secrets.json

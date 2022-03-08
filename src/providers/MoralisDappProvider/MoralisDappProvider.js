@@ -6,6 +6,15 @@ function MoralisDappProvider({ children }) {
   const { web3, Moralis, user } = useMoralis();
   const [walletAddress, setWalletAddress] = useState();
   const [chainId, setChainId] = useState();
+
+  const [contractABI, setContractABI] = useState(
+    '[{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint256","name":"itemId","type":"uint256"},{"indexed":true,"internalType":"address","name":"nftContract","type":"address"},{"indexed":true,"internalType":"uint256","name":"tokenId","type":"uint256"},{"indexed":false,"internalType":"address","name":"seller","type":"address"},{"indexed":false,"internalType":"address","name":"owner","type":"address"},{"indexed":false,"internalType":"uint256","name":"price","type":"uint256"},{"indexed":false,"internalType":"bool","name":"sold","type":"bool"}],"name":"MarketItemCreated","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint256","name":"itemId","type":"uint256"},{"indexed":false,"internalType":"address","name":"owner","type":"address"}],"name":"MarketItemSold","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint256","name":"marketItems","type":"uint256"}],"name":"MarketItemsFetched","type":"event"},{"inputs":[{"internalType":"address","name":"nftContract","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"},{"internalType":"uint256","name":"price","type":"uint256"}],"name":"createMarketItem","outputs":[],"stateMutability":"payable","type":"function"},{"inputs":[{"internalType":"address","name":"nftContract","type":"address"},{"internalType":"uint256","name":"itemId","type":"uint256"}],"name":"createMarketSale","outputs":[],"stateMutability":"payable","type":"function"},{"inputs":[],"name":"fetchMarketItems","outputs":[{"components":[{"internalType":"uint256","name":"itemId","type":"uint256"},{"internalType":"address","name":"nftContract","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"},{"internalType":"address payable","name":"seller","type":"address"},{"internalType":"address payable","name":"owner","type":"address"},{"internalType":"uint256","name":"price","type":"uint256"},{"internalType":"bool","name":"sold","type":"bool"}],"internalType":"struct Exosphere.MarketItem[]","name":"","type":"tuple[]"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"}]'
+  );
+
+  const [marketAddress, setMarketAddress] = useState(
+    "0x6399019b9F79D340CE593EF6006B627CDB3808DD"
+  );
+
   useEffect(() => {
     Moralis.onChainChanged(function (chain) {
       setChainId(chain);
@@ -20,12 +29,24 @@ function MoralisDappProvider({ children }) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => setChainId(web3.givenProvider?.chainId));
   useEffect(
-    () => setWalletAddress(web3.givenProvider?.selectedAddress || user?.get("ethAddress")),
+    () =>
+      setWalletAddress(
+        web3.givenProvider?.selectedAddress || user?.get("ethAddress")
+      ),
     [web3, user]
   );
 
   return (
-    <MoralisDappContext.Provider value={{ walletAddress, chainId }}>
+    <MoralisDappContext.Provider
+      value={{
+        walletAddress,
+        chainId,
+        contractABI,
+        setContractABI,
+        marketAddress,
+        setMarketAddress,
+      }}
+    >
       {children}
     </MoralisDappContext.Provider>
   );
