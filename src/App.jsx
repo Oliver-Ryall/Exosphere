@@ -100,7 +100,7 @@ const App = ({ isServerInfo }) => {
               <NFTBalance />
             </Route>
             <Route path="/nftMarket">
-              <NFTTokenIds inputValue={inputValue}/>
+              <NFTTokenIds inputValue={inputValue} setInputValue={setInputValue} />
             </Route>
             <Route path="/transactions">
               <NFTBalance />

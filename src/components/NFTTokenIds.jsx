@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useMoralis } from "react-moralis";
 import { Card, Image, Tooltip, Modal, Input } from "antd";
 import { useNFTTokenIds } from "hooks/useNFTTokenIds";
-import { FileSearchOutlined, SendOutlined, ShoppingCartOutlined } from "@ant-design/icons";
+import { FileSearchOutlined, RightCircleOutlined, SendOutlined, ShoppingCartOutlined } from "@ant-design/icons";
 import { useMoralisDapp } from "providers/MoralisDappProvider/MoralisDappProvider";
 import { getExplorer } from "helpers/networks";
 import AddressInput from "./AddressInput";
@@ -31,6 +31,7 @@ function NFTTokenIds({ inputValue, setInputValue }) {
   const [nftToSend, setNftToSend] = useState(null);
   const [isPending, setIsPending] = useState(false);
   const NFTCollections = getCollectionsByChain(chainId);
+  const [nftToBuy, setNftToBuy] = useState();
 
   async function transfer(nft, amount, receiver) {
     const options = {
@@ -56,8 +57,8 @@ function NFTTokenIds({ inputValue, setInputValue }) {
       });
   }
 
-  const handleTransferClick = (nft) => {
-    setNftToSend(nft);
+  const handleBuyClick = (nft) => {
+    setNftToBuy(nft);
     setVisibility(true);
   };
 
@@ -81,8 +82,8 @@ function NFTTokenIds({ inputValue, setInputValue }) {
                     }
                   />
                 </Tooltip>,
-                <Tooltip title="List this NFT">
-                  <ShoppingCartOutlined onClick={() => alert("Add smart contract integration")} />
+                <Tooltip title="Buy this NFT">
+                  <ShoppingCartOutlined onClick={() => handleBuyClick(nft)} />
                 </Tooltip>,
               ]}
               style={{ width: 240, border: "2px solid #e7eaf3" }}
@@ -106,8 +107,8 @@ function NFTTokenIds({ inputValue, setInputValue }) {
             <Card
               hoverable
               actions={[
-                <Tooltip title="List this NFT">
-                  <ShoppingCartOutlined onClick={() => alert("Add smart contract integration")} />
+                <Tooltip title="View this Collection">
+                  <RightCircleOutlined onClick={() => setInputValue(nft.addrs)} /> 
                 </Tooltip>,
               ]}
               style={{ width: 240, border: "2px solid #e7eaf3" }}
@@ -127,17 +128,21 @@ function NFTTokenIds({ inputValue, setInputValue }) {
           ))}
       </div>
       <Modal
-        title={`Transfer ${nftToSend?.name || "NFT"}`}
+        title={`Buy ${nftToBuy?.name || "NFT"}`}
         visible={visible}
         onCancel={() => setVisibility(false)}
-        onOk={() => transfer(nftToSend, amountToSend, receiverToSend)}
-        confirmLoading={isPending}
-        okText="Send"
+        onOk={() => alert("Bought this NFT")}
+        okText="Buy"
       >
-        <AddressInput autoFocus placeholder="Receiver" onChange={setReceiver} />
-        {nftToSend && nftToSend.contract_type === "erc1155" && (
-          <Input placeholder="amount to send" onChange={(e) => handleChange(e)} />
-        )}
+      <img
+            src={nftToBuy?.image}
+            style={{
+                width: "250px",
+                margin: "auto",
+                borderRadius: "10px",
+                marginBottom: "15px",
+            }}
+            />
       </Modal>
     </>
   );
