@@ -11,6 +11,7 @@ import Account from "components/Account";
 import Chains from "components/Chains";
 import NFTBalance from "components/NFTBalance";
 import NFTTokenIds from "components/NFTTokenIds";
+import NFTMarketTransactions from "components/Transactions";
 import { Menu, Layout, Tabs } from "antd";
 import SearchCollections from "components/SearchCollections";
 import "antd/dist/antd.css";
@@ -103,7 +104,7 @@ const App = ({ isServerInfo }) => {
               <NFTTokenIds inputValue={inputValue} setInputValue={setInputValue} />
             </Route>
             <Route path="/transactions">
-              <NFTBalance />
+              <NFTMarketTransactions />
             </Route>
           </Switch>
           <Redirect to="/nftBalance" />

@@ -46,7 +46,8 @@ function NFTBalance() {
     await contractProcessor.fetch({
       params: ops,
       onSucces: () => {
-        alert("Item Bought")
+        alert("Item Listed")
+        addItemImage();
       },
       onError: (error) => {
         alert("Something went wrong")
@@ -58,6 +59,18 @@ function NFTBalance() {
     setNftToSell(nft);
     setVisibility(true);
   };
+
+  function addItemImage() {
+    const ItemImage = Moralis.Object.extend("ItemImages");
+    const itemImage = new ItemImage();
+
+    itemImage.set("image", nftToSell.image);
+    itemImage.set("nftContract", nftToSell.token_address);
+    itemImage.set("tokenId", nftToSell.token_id);
+    itemImage.set("name", nftToSell.name);
+
+    itemImage.save();
+  }
 
   console.log(NFTBalance);
   return (
