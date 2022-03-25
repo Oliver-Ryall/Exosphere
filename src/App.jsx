@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useMoralis } from "react-moralis";
 import {
-  HashRouter as Router,
+  BrowserRouter as Router,
   Switch,
   Route,
   NavLink,
@@ -83,7 +83,7 @@ const App = ({ isServerInfo }) => {
               <NavLink to="/nftMarket">🖼 Explore</NavLink>
             </Menu.Item>
             <Menu.Item key="nft">
-              <NavLink to="/nftBalance">🖼 Your Collection</NavLink>
+              <NavLink to="/">🖼 Your Collection</NavLink>
             </Menu.Item>
             <Menu.Item key="transactions">
               <NavLink to="/transactions">🖼 Transactions</NavLink>
@@ -97,17 +97,17 @@ const App = ({ isServerInfo }) => {
         </Header>
         <div style={styles.content}>
           <Switch>
-            <Route path="/nftBalance">
+            <Route path="/">
               <NFTBalance />
             </Route>
-            <Route path="/nftMarket">
+            <Route path="/">
               <NFTTokenIds inputValue={inputValue} setInputValue={setInputValue} />
             </Route>
             <Route path="/transactions">
               <NFTMarketTransactions />
             </Route>
           </Switch>
-          <Redirect to="/nftBalance" />
+          <Redirect to="/" />
         </div>
       </Router>
       <Footer style={{ textAlign: "center" }}>
